@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rekomendasi Pekerjaan</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Archivo', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .card {
+      box-shadow: 0 0.15rem 1.75rem rgba(33,40,50,.15);
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .btn-link {
+      cursor: pointer;
+      padding: 0;
+      font-weight: 600;
+    }
+    .form-section {
+      max-width: 900px;
+      margin: 0 auto 3rem auto;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
+    }
+    .job-cards {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+    @media (max-width: 576px) {
+      .btn-submit-eval {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Job Recommender</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'evaluation_page' %}active{% endif %}" href="{{ url_for('evaluation_page') }}">Evaluation</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Form Search Section -->
+  <section class="form-section my-5">
+    <h2 class="text-center mb-4">🎯 Search Jobs Based on Job Qualifications</h2>
+
+    <form method="POST" novalidate>
+      <div class="mb-4">
+        <label for="job_category" class="form-label"><b>Select Job Category</b></label>
+        <select id="job_category" name="job_category" class="form-select" required>
+          <option value="">-- Select Category --</option>
+          {% set selected = request.form.get('job_category', '') %}
+          {% for category in [
+            "Accounting", "Actuarial / Statistics", "Administration", "Agriculture / Plantation","Agency Digital", "Architecture",
+            "Automotive", "Banking", "Biotechnology", "Business Development",
+            "Call Center", "Cleaning / Housekeeping", "Construction",
+            "Content Creator", "Customer Relationship Management (CRM)", "Customer Service",
+            "Data Analyst", "Data Scientist", "Graphic Design", "Digital Marketing", "Driver / Courier",
+            "E-commerce", "Education", "Electrical Engineering", "Engineering", "Event Management",
+            "Fashion / Apparel", "Finance", "Food and Beverage", "Geographic Information System (GIS)",
+            "Graphic Motion / Animation", "Health & Medical", "Healthcare Support", "Help Desk / IT Support",
+            "Hospitality", "Human Resources", "Information Technology", "Insurance", "Interpreter / Translator",
+            "Inventory Control", "Journalism", "Laboratory / Lab Technician", "Legal", "Legal Compliance",
+            "Logistics", "Logistics Planning", "Maintenance / Technician", "Manufacturing", "Marine / Offshore",
+            "Marketing", "Mechanic / Machine Technician", "Media & Communication", "Mining",
+            "Network Engineer", "Operations", "Content Writing", "Photography", "Procurement / Purchasing",
+            "Product Manager", "Project Management", "Public Health", "Public Relations",
+            "Quality Assurance", "Real Estate / Property", "Receptionist / Front Office",
+            "Regulatory Affairs", "Research & Development", "Research Assistant", "Retail",
+            "Safety / Occupational Health and Safety (OHS)", "Sales", "Science / Research", "Security / Guard", "Shipping / Expedition",
+            "Social Media Specialist", "Software Developer", "Statistician", "Store Keeper / Warehouse",
+            "Supply Chain", "Teaching Assistant", "Technical Support", "Telecommunications",
+            "Textile / Garment", "Tourism / Travel Agent", "Training & Development", "Training Officer",
+            "UI/UX Designer", "Video Editing", "Video Production", "Warehouse Management",
+            "Web Developer", "Welding / Fabrication", "Writing / Editing"
+          ] %}
+          <option value="{{ category }}" {% if selected == category %}selected{% endif %}>{{ category }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="experience_level" class="form-label"><b>Experience Level</b></label>
+          <select class="form-select" id="experience_level" name="experience_level">
+            <option value="">Select...</option>
+            <option value="Fresh Graduate" {% if request.form.get('experience_level') == 'Fresh Graduate' %}selected{% endif %}>Fresh Graduate</option>
+            <option value="Internship" {% if request.form.get('experience_level') == 'Internship' %}selected{% endif %}>Internship</option>
+            <option value="Entry Level (0-1 year)" {% if request.form.get('experience_level') == 'Entry Level (0-1 year)' %}selected{% endif %}>Entry Level (0-1 year)</option>
+            <option value="3-5 years" {% if request.form.get('experience_level') == 'Mid Level (3-5 years)' %}selected{% endif %}>Mid Level (3-5 years)</option>
+            <option value="Senior Level (5-10 years)" {% if request.form.get('experience_level') == 'Senior Level (5-10 years)' %}selected{% endif %}>Senior Level (5-10 years)</option>
+            <option value="Executive (10+ years)" {% if request.form.get('experience_level') == 'Executive (10+ years)' %}selected{% endif %}>Executive (10+ years)</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="skills" class="form-label"><b>Key Skills</b></label>
+          <input type="text" class="form-control" id="skills" name="skills" placeholder="e.g., JavaScript, SQL, UI/UX" value="{{ request.form.get('skills', '') }}">
+        </div>
+
+        <div class="col-md-6">
+          <label for="education" class="form-label"><b>Highest Education</b></label>
+          <select class="form-select" id="education" name="education">
+          <option value="">Select...</option>
+          <option value="Junior High School" {% if request.form.get('education') == 'Junior High School' %}selected{% endif %}>Junior High School</option>
+          <option value="Senior High School / Equivalent" {% if request.form.get('education') == 'Senior High School / Equivalent' %}selected{% endif %}>Senior High School / Equivalent</option>
+          <option value="Associate Degree" {% if request.form.get('education') == 'Associate Degree' %}selected{% endif %}>Associate Degree</option>
+          <option value="Bachelor's Degree" {% if request.form.get('education') == "Bachelor's Degree" %}selected{% endif %}>Bachelor's Degree</option>
+          <option value="Master's Degree" {% if request.form.get('education') == "Master's Degree" %}selected{% endif %}>Master's Degree</option>
+          <option value="Doctorate (PhD)" {% if request.form.get('education') == "Doctorate (PhD)" %}selected{% endif %}>Doctorate (PhD)</option></select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="work_type" class="form-label"><b>Work Type</b></label>
+          <select class="form-select" id="work_type" name="work_type">
+            <option value="">Select...</option>
+            <option value="FULL_TIME" {% if request.form.get('work_type') == 'FULL_TIME' %}selected{% endif %}>Full-time</option>
+            <option value="PART_TIME" {% if request.form.get('work_type') == 'PART_TIME' %}selected{% endif %}>Part-time</option>
+            <option value="CONTRACT" {% if request.form.get('work_type') == 'CONTRACT' %}selected{% endif %}>Contract</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary px-5">Find Jobs</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Job Recommendation Results -->
+  {% if rekomendasi %}
+  <section class="job-cards mb-5">
+    <form method="POST" action="{{ url_for('evaluation_page') }}">
+      <input type="hidden" name="job_category" value="{{ request.form.get('job_category', '') }}">
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for job in rekomendasi %}
+        <div class="col">
+          <div class="card h-100 border-primary">
+            <div class="card-body">
+              <p class="card-text">
+                <strong>job id:</strong> <span class="badge bg-info text-dark">{{ job.job_id }}</span>
+              </p>
+              <h5 class="card-title">{{ job.title }}</h5>
+              <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
+              <p class="card-text">
+                <strong>Work type:</strong> <span class="badge bg-warning text-dark">{{ job.work_type }}</span>
+              </p>
+              <p class="card-text">
+                <strong>Description:</strong><br>
+                {{ job.description[:300] }}<span id="dots{{ loop.index }}">...</span>
+                <span id="more{{ loop.index }}" style="display: none;">{{ job.description[300:] }}</span>
+              </p>
+              <button type="button" class="btn btn-link btn-sm" onclick="toggleReadMore(event, {{ loop.index }})">Read more</button>
+              <p class="card-text mt-2"><strong>Skor Similaritas:</strong> {{ '%.4f' | format(job.similarity_score) }}</p>
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="relevan_{{ loop.index0 }}" name="relevan_{{ loop.index0 }}" value="1">
+                <label class="form-check-label" for="relevan_{{ loop.index0 }}">Tandai relevan</label>
+              </div>
+
+              <input type="hidden" name="doc_idx_{{ loop.index0 }}" value="{{ job.index }}">
+              <input type="hidden" name="sim_{{ loop.index0 }}" value="{{ job.similarity_score }}">
+              <a href="{{ job.job_posting_url }}" target="_blank" class="btn btn-primary mt-3">Lihat</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <input type="hidden" name="total" value="{{ total_jobs }}">
+      <div class="mt-4 text-center">
+        <button type="submit" class="btn btn-success btn-submit-eval" name="evaluate">Simpan preferensi pekerjaan</button>
+      </div>
+    </form>
+  </section>
+  {% endif %}
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+  <!-- Toggle Read More Script -->
+  <script>
+    function toggleReadMore(event, index) {
+      const dots = document.getElementById("dots" + index);
+      const moreText = document.getElementById("more" + index);
+      const btnText = event.target;
+
+      if (dots.style.display === "none") {
+        dots.style.display = "inline";
+        moreText.style.display = "none";
+        btnText.textContent = "Read more";
+      } else {
+        dots.style.display = "none";
+        moreText.style.display = "inline";
+        btnText.textContent = "Read less";
+      }
+    }
+  </script>
+</body>
+</html>

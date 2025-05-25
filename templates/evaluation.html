@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Evaluation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Job Recommender</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('evaluation_page') }}">Evaluation</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">📊 Evaluation Results</h2>
+
+  <div class="mt-2">
+  <p><strong>Keterangan Confusion Matrix:</strong></p>
+  <ul>
+    <li><strong>True Positive (TP):</strong> Sistem merekomendasikan pekerjaan dan memang relevan.</li>
+    <li><strong>False Positive (FP):</strong> Sistem merekomendasikan pekerjaan, tapi ternyata tidak relevan.</li>
+    <li><strong>False Negative (FN):</strong> Sistem tidak merekomendasikan pekerjaan yang sebenarnya relevan.</li>
+    <li><strong>True Negative (TN):</strong> Sistem tidak merekomendasikan pekerjaan, dan memang tidak relevan.</li>
+  </ul>
+  <p>
+    Matriks ini digunakan untuk mengevaluasi kinerja sistem rekomendasi berdasarkan label relevansi manual yang diberikan.
+    Semakin banyak nilai <strong>TP</strong> dan <strong>TN</strong>, semakin baik kinerja sistem.
+  </p>
+</div>
+
+  {% if evaluation %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <ul class="list-group">
+        <li class="list-group-item"><strong>Precision:</strong> {{ evaluation.precision }}</li>
+        <li class="list-group-item"><strong>Recall:</strong> {{ evaluation.recall }}</li>
+        <li class="list-group-item"><strong>F1 Score:</strong> {{ evaluation.f1_score }}</li>
+      </ul>
+
+      <h5 class="mt-4 text-center">Confusion Matrix</h5>
+      <div class="text-center">
+        <img src="data:image/png;base64,{{ img_conf_matrix }}" alt="Confusion Matrix" class="img-fluid"/>
+      </div>
+
+      <div class="mt-4">
+        <h5>📘 Evaluation Explanation</h5>
+        <p><strong>Precision</strong> menunjukkan seberapa banyak dari semua rekomendasi yang diberikan sistem yang benar-benar relevan (tepat sasaran).</p>
+        <p><strong>Recall</strong> menunjukkan seberapa banyak dari semua pekerjaan yang seharusnya direkomendasikan berhasil ditemukan oleh sistem.</p>
+        <p><strong>F1 Score</strong> adalah rata-rata harmonis dari precision dan recall, memberikan gambaran keseimbangan antara keduanya.</p>
+        <p>Semakin tinggi nilai-nilai ini, maka semakin akurat dan relevan sistem dalam memberikan rekomendasi pekerjaan kepada pengguna.</p>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-info text-center">
+    No evaluation data available. Please submit your preferences on the <a href="{{ url_for('index') }}">Home</a> page.
+  </div>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
